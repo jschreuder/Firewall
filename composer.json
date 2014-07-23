@@ -1,0 +1,27 @@
+{
+    "name": "webspot/application",
+    "type": "library",
+    "description": "Webspot Application Framework",
+    "homepage": "http://webspotframework.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jelmer Schreuder",
+            "email": "j.schreuder@webspotframework.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/http-foundation": ">=2.1.0,<3.0.0",
+        "symfony/event-dispatcher": ">=2.1.0,<3.0.0"
+    },
+    "suggest": {
+        "webspot/http-kernel": "Best used as StackPHP middleware."
+    },
+    "autoload": {
+        "psr-4": {
+            "Webspot\\Firewall\\": "src",
+            "Webspot\\Firewall\\Test\\": "tests"
+        }
+    }
+}
