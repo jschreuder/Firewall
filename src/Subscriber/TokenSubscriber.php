@@ -14,6 +14,18 @@ use Webspot\Firewall\FirewallSubscriberInterface;
 
 class TokenSubscriber implements FirewallSubscriberInterface
 {
+    /** {@inheritdoc} */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 1024],
+            Firewall::EVENT_VALIDATE_TOKEN    => ['validateToken', 0],
+            Firewall::EVENT_VISITOR_ALLOWED   => ['visitorAllowed', 0],
+            Firewall::EVENT_CREATE_TOKEN      => ['createToken', 0],
+            Firewall::EVENT_CREATE_TOKEN      => ['writeCreateToken', -1024],
+        ];
+    }
+
     /** @var  string */
     private $key;
 
@@ -66,18 +78,6 @@ class TokenSubscriber implements FirewallSubscriberInterface
     private function getTokenFromRequest(Request $request)
     {
         return $request->cookies->get($this->cookieName);
-    }
-
-    /** {@inheritdoc} */
-    public static function getSubscribedEvents()
-    {
-        return [
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 1024],
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateToken', 0],
-            Firewall::EVENT_VISITOR_ALLOWED   => ['visitorAllowed', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['createToken', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['writeCreateToken', -1024],
-        ];
     }
 
     /**

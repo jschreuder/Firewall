@@ -22,6 +22,9 @@ class Firewall
     const EVENT_VALIDATE_TOKEN = 'validate-token';
     const EVENT_TOKEN_VALIDATED = 'token-validated';
 
+    // When authenticating a user
+    const EVENT_AUTHENTICATE = 'authenticate';
+
     /** @var  EventDispatcher */
     private $eventDispatcher;
 
