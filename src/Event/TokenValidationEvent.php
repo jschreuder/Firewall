@@ -65,7 +65,7 @@ class TokenValidationEvent extends Event
     }
 
     /**
-     * Returns whether the visitor currently is considered allowed
+     * Returns whether the Token currently is considered valid
      *
      * @return  bool
      */

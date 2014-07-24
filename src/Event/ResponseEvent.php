@@ -5,7 +5,7 @@ namespace Webspot\Firewall\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
 
-class SignOffEvent extends Event
+class ResponseEvent extends Event
 {
     /** @var  Response */
     private $response;

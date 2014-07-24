@@ -17,7 +17,7 @@ class IpGuard implements GuardInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
+            Firewall::EVENT_VALIDATE_REQUEST => ['validateRequest', 0],
         ];
     }
 
@@ -57,7 +57,7 @@ class IpGuard implements GuardInterface
      * @param   ValidationEvent $event
      * @return  void
      */
-    public function validateVisitor(ValidationEvent $event)
+    public function validateRequest(ValidationEvent $event)
     {
         $state = $this->determineIpState($event->getRequest()->getClientIp());
         if ($state === self::STATUS_BLACKLIST) {

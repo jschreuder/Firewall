@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Webspot\Firewall\Event\CreateTokenEvent;
-use Webspot\Firewall\Event\SignOffEvent;
+use Webspot\Firewall\Event\ResponseEvent;
 use Webspot\Firewall\Event\TokenValidatedEvent;
 use Webspot\Firewall\Event\TokenValidationEvent;
 use Webspot\Firewall\Event\ValidationEvent;
@@ -23,10 +23,10 @@ class TokenGuard implements GuardInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 1024],
+            Firewall::EVENT_VALIDATE_REQUEST => ['validateRequest', 1024],
             Firewall::EVENT_VALIDATE_TOKEN => ['validateToken', 0],
-            Firewall::EVENT_VISITOR_ALLOWED => ['visitorAllowed', 0],
-            Firewall::EVENT_SIGNOFF => ['signOff', 0],
+            Firewall::EVENT_REQUEST_ALLOWED => ['requestAllowed', 0],
+            Firewall::EVENT_SEND_RESPONSE => ['sendResponse', 0],
             Firewall::EVENT_CREATE_TOKEN => ['createToken', 0],
         ];
     }
@@ -41,7 +41,7 @@ class TokenGuard implements GuardInterface
     private $cookieSettings;
 
     /** @var  bool */
-    private $visitorAllowed = false;
+    private $requestAllowed = false;
 
     /** @var  Jwt\Jwt */
     private $jwt;
@@ -110,7 +110,7 @@ class TokenGuard implements GuardInterface
      * @param   ValidationEvent $event
      * @return  void
      */
-    public function validateVisitor(ValidationEvent $event)
+    public function validateRequest(ValidationEvent $event)
     {
         $eventDispatcher = $this->getEventDispatcher();
         $request = $event->getRequest();
@@ -163,25 +163,25 @@ class TokenGuard implements GuardInterface
     }
 
     /**
-     * Gets called when the visitor is allowed in, set the visitorAllowed switch to true to trigger
+     * Gets called when the request is allowed, set the requestAllowed switch to true to trigger
      * writing the Token to the response cookie
      */
-    public function visitorAllowed()
+    public function requestAllowed()
     {
-        $this->visitorAllowed = true;
+        $this->requestAllowed = true;
     }
 
     /**
      * Launches into a EVENT_CREATE_TOKEN event with the old token, the Jwt instance necessary
      * to create a new one and the Cookie object that is added to the Response when done
      *
-     * @param   SignOffEvent $event
+     * @param   ResponseEvent $event
      * @return  void
      */
-    public function signOff(SignOffEvent $event)
+    public function sendResponse(ResponseEvent $event)
     {
-        // Only create token when visitor is allowed
-        if (!$this->visitorAllowed) {
+        // Only create token when request is allowed
+        if (!$this->requestAllowed) {
             return;
         }
         // Only renew token when it is due for it

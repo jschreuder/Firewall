@@ -17,7 +17,7 @@ class AuthenticationGuard implements GuardInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
+            Firewall::EVENT_VALIDATE_REQUEST => ['validateRequest', 0],
             Firewall::EVENT_AUTHENTICATE => ['authenticateUser', 0],
             Firewall::EVENT_CREATE_TOKEN => ['addUserToToken', -256],
         ];
@@ -81,12 +81,12 @@ class AuthenticationGuard implements GuardInterface
     }
 
     /**
-     * Sees if there's a user to authenticate
+     * Sees if there's a user to authenticate and trigger EVENT_AUTHENTICATE if so
      *
      * @param   ValidationEvent $event
      * @return  void
      */
-    public function validateVisitor(ValidationEvent $event)
+    public function validateRequest(ValidationEvent $event)
     {
         $request = $event->getRequest();
 

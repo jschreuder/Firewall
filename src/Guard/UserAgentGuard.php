@@ -12,8 +12,7 @@ class UserAgentGuard implements GuardInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
-            Firewall::EVENT_CREATE_TOKEN => ['addUserToToken', 0],
+            Firewall::EVENT_VALIDATE_REQUEST => ['validateRequest', 0],
         ];
     }
 
@@ -43,7 +42,7 @@ class UserAgentGuard implements GuardInterface
      * @param   ValidationEvent $event
      * @return  void
      */
-    public function validateVisitor(ValidationEvent $event)
+    public function validateRequest(ValidationEvent $event)
     {
         $ua = $event->getRequest()->headers->get('User-Agent');
         foreach ($this->regexes as $regex) {

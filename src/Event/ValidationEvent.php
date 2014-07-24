@@ -65,7 +65,7 @@ class ValidationEvent extends Event
     }
 
     /**
-     * Returns whether the visitor currently is considered allowed
+     * Returns whether the request currently is considered allowed
      *
      * @return  bool
      */
@@ -75,7 +75,7 @@ class ValidationEvent extends Event
     }
 
     /**
-     * Set the reason for failing or allowing for debug purposes, should never be shown to the visitor
+     * Set the reason for failing or allowing for debug purposes, should never be shown to the outside world
      *
      * @param   string $msg
      * @return  void
