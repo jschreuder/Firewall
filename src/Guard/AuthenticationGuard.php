@@ -1,14 +1,14 @@
 <?php
 
-namespace Webspot\Firewall\Subscriber;
+namespace Webspot\Firewall\Guard;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\AuthenticationEvent;
 use Webspot\Firewall\Event\ValidationEvent;
+use Webspot\Firewall\Exception\UnauthorizedException;
 use Webspot\Firewall\Firewall;
-use Webspot\Firewall\FirewallSubscriberInterface;
 
-class AuthenticationSubscriber implements FirewallSubscriberInterface
+class AuthenticationGuard implements GuardInterface
 {
     /** {@inheritdoc} */
     public static function getSubscribedEvents()
@@ -96,6 +96,7 @@ class AuthenticationSubscriber implements FirewallSubscriberInterface
         } else {
             $event->setState(ValidationEvent::STATE_REFUSED);
             $event->setMessage('Authentication failed');
+            $event->setException(new UnauthorizedException());
         }
     }
 

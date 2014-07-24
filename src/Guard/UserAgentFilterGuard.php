@@ -1,13 +1,12 @@
 <?php
 
-namespace Webspot\Firewall\Subscriber;
+namespace Webspot\Firewall\Guard;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Firewall;
-use Webspot\Firewall\FirewallSubscriberInterface;
 
-class UserAgentFilterSubscriber implements FirewallSubscriberInterface
+class UserAgentGuard implements GuardInterface
 {
     /** {@inheritdoc} */
     public static function getSubscribedEvents()

@@ -1,8 +1,8 @@
 <?php
 
-namespace Webspot\Firewall;
+namespace Webspot\Firewall\Exception;
 
-class FirewallException extends \RuntimeException
+class ForbiddenException extends FirewallException
 {
     public function __construct($message = '', \Exception $previous = null)
     {

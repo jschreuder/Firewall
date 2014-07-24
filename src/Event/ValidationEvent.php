@@ -4,6 +4,7 @@ namespace Webspot\Firewall\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
+use Webspot\Firewall\Exception\FirewallException;
 
 class ValidationEvent extends Event
 {
@@ -18,6 +19,9 @@ class ValidationEvent extends Event
 
     /** @var  string */
     private $message;
+
+    /** @var  FirewallException */
+    private $exception;
 
     public function __construct(Request $request, $initialState = self::STATE_ALLOWED)
     {
@@ -55,7 +59,9 @@ class ValidationEvent extends Event
     public function setState($state)
     {
         $this->state = $this->validateStateValue($state);
-        $this->stopPropagation();
+        if ($this->state === self::STATE_REFUSED) {
+            $this->stopPropagation();
+        }
     }
 
     /**
@@ -87,5 +93,20 @@ class ValidationEvent extends Event
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * @param   FirewallException $exception
+     * @return  void
+     */
+    public function setException(FirewallException $exception)
+    {
+        $this->exception = $exception;
+    }
+
+    /** @return  FirewallException */
+    public function getException()
+    {
+        return $this->exception;
     }
 }

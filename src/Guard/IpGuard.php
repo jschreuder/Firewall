@@ -1,13 +1,13 @@
 <?php
 
-namespace Webspot\Firewall\Subscriber;
+namespace Webspot\Firewall\Guard;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\ValidationEvent;
+use Webspot\Firewall\Exception\ForbiddenException;
 use Webspot\Firewall\Firewall;
-use Webspot\Firewall\FirewallSubscriberInterface;
 
-class IpFilterSubscriber implements FirewallSubscriberInterface
+class IpGuard implements GuardInterface
 {
     const STATUS_BLACKLIST = -1;
     const STATUS_WHITELIST = 1;
@@ -63,6 +63,7 @@ class IpFilterSubscriber implements FirewallSubscriberInterface
         if ($state === self::STATUS_BLACKLIST) {
             $event->setState(ValidationEvent::STATE_REFUSED);
             $event->setMessage('IP address blacklisted');
+            $event->setException(new ForbiddenException());
         } elseif ($state === self::STATUS_WHITELIST) {
             $event->setState(ValidationEvent::STATE_ALLOWED);
             $event->setMessage('IP address whitelisted');
