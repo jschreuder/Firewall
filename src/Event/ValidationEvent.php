@@ -40,7 +40,7 @@ class ValidationEvent extends Event
      */
     private function validateStateValue($state)
     {
-        if ( ! in_array($state, [self::STATE_ALLOWED, self::STATE_REFUSED])) {
+        if (!in_array($state, [self::STATE_ALLOWED, self::STATE_REFUSED])) {
             throw new \OutOfRangeException('ValidationEvent state must be either STATE_ALLOWED or STATE_REFUSED.');
         }
         return $state;

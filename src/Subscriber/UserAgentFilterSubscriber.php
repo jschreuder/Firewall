@@ -13,8 +13,8 @@ class UserAgentFilterSubscriber implements FirewallSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['addUserToToken', 0],
+            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
+            Firewall::EVENT_CREATE_TOKEN => ['addUserToToken', 0],
         ];
     }
 

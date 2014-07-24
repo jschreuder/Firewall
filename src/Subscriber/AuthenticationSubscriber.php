@@ -14,9 +14,9 @@ class AuthenticationSubscriber implements FirewallSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 0],
-            Firewall::EVENT_AUTHENTICATE      => ['authenticateUser', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['addUserToToken', -256],
+            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
+            Firewall::EVENT_AUTHENTICATE => ['authenticateUser', 0],
+            Firewall::EVENT_CREATE_TOKEN => ['addUserToToken', -256],
         ];
     }
 
@@ -114,10 +114,12 @@ class AuthenticationSubscriber implements FirewallSubscriberInterface
         }
 
         $query = $this->getQuery();
-        $query->execute([
+        $query->execute(
+            [
                 'username' => $username,
                 'password' => $this->hash($password),
-            ]);
+            ]
+        );
         if ($query->rowCount() > 0) {
             $user = $query->fetch(\PDO::FETCH_ASSOC);
             $event->setUser($user);

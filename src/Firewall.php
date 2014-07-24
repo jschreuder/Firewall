@@ -63,10 +63,10 @@ class Firewall
             $this->getEventDispatcher()->dispatch(self::EVENT_VALIDATE_VISITOR, $validationEvent);
         } catch (\Exception $e) {
             $validationEvent->setState(ValidationEvent::STATE_REFUSED);
-            $validationEvent->setMessage('An error occurred: '.$e->getMessage());
+            $validationEvent->setMessage('An error occurred: ' . $e->getMessage());
         }
 
-        if ( ! $validationEvent->isAllowed()) {
+        if (!$validationEvent->isAllowed()) {
             $refusedEvent = new RefusedEvent($request, $validationEvent->getMessage());
             $this->getEventDispatcher()->dispatch(self::EVENT_VISITOR_REFUSED, $refusedEvent);
             throw new FirewallException($refusedEvent->getMessage(), isset($e) ? $e : null);

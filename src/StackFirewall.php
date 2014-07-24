@@ -27,7 +27,7 @@ class StackFirewall implements HttpKernelInterface
             $this->firewall->validate($request);
             return $this->app->handle($request, $type, $catch);
         } catch (\Exception $e) {
-            if ( ! $catch) {
+            if (!$catch) {
                 throw $e;
             }
 

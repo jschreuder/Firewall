@@ -18,11 +18,11 @@ class TokenSubscriber implements FirewallSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 1024],
-            Firewall::EVENT_VALIDATE_TOKEN    => ['validateToken', 0],
-            Firewall::EVENT_VISITOR_ALLOWED   => ['visitorAllowed', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['createToken', 0],
-            Firewall::EVENT_CREATE_TOKEN      => ['writeCreateToken', -1024],
+            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 1024],
+            Firewall::EVENT_VALIDATE_TOKEN => ['validateToken', 0],
+            Firewall::EVENT_VISITOR_ALLOWED => ['visitorAllowed', 0],
+            Firewall::EVENT_CREATE_TOKEN => ['createToken', 0],
+            Firewall::EVENT_CREATE_TOKEN => ['writeCreateToken', -1024],
         ];
     }
 
@@ -41,7 +41,7 @@ class TokenSubscriber implements FirewallSubscriberInterface
     /**
      * @param  string $key
      * @param  string $cookieName
-     * @param  int $expiresIn  number of seconds after which the token should expire
+     * @param  int $expiresIn number of seconds after which the token should expire
      */
     public function __construct($key, $cookieName = 'ws-token', $expiresIn = 7200)
     {
@@ -91,7 +91,7 @@ class TokenSubscriber implements FirewallSubscriberInterface
 
         // Check for a token, otherwise nothing to do
         $token = $this->getTokenFromRequest($request);
-        if ( ! $token) {
+        if (!$token) {
             return;
         }
 

@@ -58,7 +58,7 @@ class TokenValidationEvent extends Event
      */
     public function setState($state)
     {
-        if ( ! in_array($state, [self::STATE_VALIDATED, self::STATE_INVALID, self::STATE_ILLEGAL])) {
+        if (!in_array($state, [self::STATE_VALIDATED, self::STATE_INVALID, self::STATE_ILLEGAL])) {
             throw new \OutOfRangeException('ValidationEvent state must be either STATE_ALLOWED or STATE_REFUSED.');
         }
         $this->state = $state;

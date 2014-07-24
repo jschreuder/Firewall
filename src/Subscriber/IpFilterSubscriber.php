@@ -11,13 +11,13 @@ class IpFilterSubscriber implements FirewallSubscriberInterface
 {
     const STATUS_BLACKLIST = -1;
     const STATUS_WHITELIST = 1;
-    const STATUS_UNKNOWN   = 0;
+    const STATUS_UNKNOWN = 0;
 
     /** {@inheritdoc} */
     public static function getSubscribedEvents()
     {
         return [
-            Firewall::EVENT_VALIDATE_VISITOR  => ['validateVisitor', 0],
+            Firewall::EVENT_VALIDATE_VISITOR => ['validateVisitor', 0],
         ];
     }
 
