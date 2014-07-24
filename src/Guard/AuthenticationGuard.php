@@ -4,12 +4,15 @@ namespace Webspot\Firewall\Guard;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\AuthenticationEvent;
+use Webspot\Firewall\Event\CreateTokenEvent;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\UnauthorizedException;
 use Webspot\Firewall\Firewall;
 
 class AuthenticationGuard implements GuardInterface
 {
+    const TOKEN_USER_ID = 'fwl:uid';
+
     /** {@inheritdoc} */
     public static function getSubscribedEvents()
     {
@@ -127,8 +130,14 @@ class AuthenticationGuard implements GuardInterface
         }
     }
 
+    /**
+     * Adds the authenticated User's ID to the JWT
+     *
+     * @param   CreateTokenEvent $event
+     * @return  void
+     */
     public function addUserToToken(CreateTokenEvent $event)
     {
-        // @todo add the userId to the token
+        $event->getJwt()->custom($this->userId, self::TOKEN_USER_ID);
     }
 }
