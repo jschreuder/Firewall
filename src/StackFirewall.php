@@ -24,14 +24,16 @@ class StackFirewall implements HttpKernelInterface
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
         try {
-            $this->firewall->validate($request);
-            return $this->app->handle($request, $type, $catch);
+            $this->firewall->guard($request);
+            $response = $this->app->handle($request, $type, $catch);
+            $this->firewall->signOff($response);
+            return $response;
         } catch (\Exception $e) {
             if (!$catch) {
                 throw $e;
             }
 
-            return new Response('Not allowed', 403);
+            return new Response('['.get_class($e).'] '.$e->getMessage(), $e->getCode() ?: 403);
         }
     }
 }

@@ -61,7 +61,7 @@ class Firewall
      * @return  void
      * @throws  FirewallException when validation fails
      */
-    public function validate(Request $request)
+    public function guard(Request $request)
     {
         $eventDispatcher = $this->getEventDispatcher();
         $validationEvent = new ValidationEvent($request);
