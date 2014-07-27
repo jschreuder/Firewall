@@ -171,7 +171,7 @@ class TokenGuard implements EventDispatcherAwareGuardInterface
     {
         // Decode the token and respond accordingly
         try {
-            $this->decodedToken = (array) $this->getJwt()->decode($event->getToken());
+            $this->decodedToken = (array)$this->getJwt()->decode($event->getToken());
         } catch (\Exception $e) {
             // @todo add support for detecting a cookie with wrong signage to output as STATE_ILLEGAL?
             return;
@@ -217,15 +217,17 @@ class TokenGuard implements EventDispatcherAwareGuardInterface
         $this->getEventDispatcher()->dispatch(Firewall::EVENT_CREATE_TOKEN, $createTokenEvent);
 
         // When done, create Cookie and write to Response
-        $event->getResponse()->headers->setCookie(new Cookie(
-            $this->getCookieName(),
-            $createTokenEvent->getJwt()->encode(),
-            $this->getCookieExpire(),
-            $this->getCookiePath(),
-            $this->getCookieDomain(),
-            $this->getCookieSecure(),
-            $this->getCookieHttpOnly()
-        ));
+        $event->getResponse()->headers->setCookie(
+            new Cookie(
+                $this->getCookieName(),
+                $createTokenEvent->getJwt()->encode(),
+                $this->getCookieExpire(),
+                $this->getCookiePath(),
+                $this->getCookieDomain(),
+                $this->getCookieSecure(),
+                $this->getCookieHttpOnly()
+            )
+        );
     }
 
     /**

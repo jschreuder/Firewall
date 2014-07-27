@@ -42,7 +42,7 @@ class AuthenticationEvent extends Event
      */
     public function setUserId($userId)
     {
-        $this->userId = $userId ?: null;
+        $this->userId = $userId ? : null;
     }
 
     /** @return  array */

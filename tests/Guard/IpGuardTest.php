@@ -8,7 +8,7 @@ use Webspot\Firewall\Guard\IpGuard;
 
 class IpGuardTest extends PHPUnit_Framework_TestCase
 {
-    /** @var  \Webspot\Firewall\Event\ValidationEvent | \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  ValidationEvent | \PHPUnit_Framework_MockObject_MockObject */
     private $event;
 
     public function setUp()
@@ -21,7 +21,7 @@ class IpGuardTest extends PHPUnit_Framework_TestCase
     {
         $ipAddress = '0.0.0.1';
 
-        $checker = function($ip) use ($ipAddress) {
+        $checker = function ($ip) use ($ipAddress) {
             $this->assertEquals($ipAddress, $ip);
             return IpGuard::STATUS_UNKNOWN;
         };
@@ -44,7 +44,7 @@ class IpGuardTest extends PHPUnit_Framework_TestCase
     {
         $ipAddress = 'abc.def.ghi.jkl';
 
-        $checker = function($ip) use ($ipAddress) {
+        $checker = function ($ip) use ($ipAddress) {
             throw new \Exception('This should not happen.');
         };
         $ipGuard = new IpGuard($checker);
@@ -76,7 +76,7 @@ class IpGuardTest extends PHPUnit_Framework_TestCase
     {
         $ipAddress = '1.1.1.2';
 
-        $checker = function($ip) use ($ipAddress) {
+        $checker = function ($ip) use ($ipAddress) {
             $this->assertEquals($ipAddress, $ip);
             return IpGuard::STATUS_BLACKLIST;
         };
@@ -109,7 +109,7 @@ class IpGuardTest extends PHPUnit_Framework_TestCase
     {
         $ipAddress = '1.1.1.3';
 
-        $checker = function($ip) use ($ipAddress) {
+        $checker = function ($ip) use ($ipAddress) {
             $this->assertEquals($ipAddress, $ip);
             return IpGuard::STATUS_WHITELIST;
         };

@@ -55,7 +55,7 @@ class AuthenticationGuard implements EventDispatcherAwareGuardInterface
     }
 
     /** @return  EventDispatcher */
-    private function getEventDispatcher()
+    protected function getEventDispatcher()
     {
         return $this->eventDispatcher;
     }
@@ -65,7 +65,7 @@ class AuthenticationGuard implements EventDispatcherAwareGuardInterface
      * @param   string $password
      * @return  int|mixed
      */
-    private function authenticate($username, $password)
+    protected function authenticate($username, $password)
     {
         return call_user_func($this->authenticator, $username, $password);
     }

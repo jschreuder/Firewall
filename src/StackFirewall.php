@@ -34,7 +34,7 @@ class StackFirewall implements HttpKernelInterface
             }
             // When we have to catch, throw something mildly readable, though exception should be caught
             // on the outside and handled there accordingly
-            $response = new Response('['.get_class($e).'] '.$e->getMessage(), $e->getCode() ?: 403);
+            $response = new Response('[' . get_class($e) . '] ' . $e->getMessage(), $e->getCode() ? : 403);
         }
 
         // And try once more, now with the sendResponse() method to sign off if necessary
@@ -46,7 +46,7 @@ class StackFirewall implements HttpKernelInterface
             }
             // When we have to catch, throw something mildly readable, though exception should be caught
             // on the outside and handled there accordingly
-            $response = new Response('['.get_class($e).'] '.$e->getMessage(), $e->getCode() ?: 403);
+            $response = new Response('[' . get_class($e) . '] ' . $e->getMessage(), $e->getCode() ? : 403);
         }
         return $response;
     }
