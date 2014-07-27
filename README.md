@@ -1,7 +1,7 @@
 Webspot Firewall
 ================
 
-NOTE: this is pre-alpha, DO NOT USE.
+#### NOTE: this is pre-alpha, DO NOT USE.
 
 The Firewall is a StackPHP middleware that may be used to check certain guards against unwanted requests. By putting
 the Firewall in between your application and the outside world. This is done by attaching Guards to the Firewall that
@@ -16,7 +16,7 @@ The Events
 
 All events have accompanying Event objects that are specific to their needs.
 
-__There are 4 main events on the firewall:__
+#### There are 4 main events on the firewall
 
 * `Firewall::EVENT_VALIDATE_REQUEST`
 
@@ -35,7 +35,7 @@ When the Request validation concluded it's refused, this event is triggered.
 After allowed the Request is sent on to the Application, once it gets back with a Response that triggers this Event to
 allow signing off on the Response as well.
 
-__The included guards also trigger a few semi-core events:__
+#### The included guards also trigger a few semi-core events
 
 * `Firewall::EVENT_CREATE_TOKEN`
 * `Firewall::EVENT_VALIDATE_TOKEN`
@@ -45,19 +45,19 @@ __The included guards also trigger a few semi-core events:__
 The Guards
 ----------
 
-* __TokenGuard__
+### TokenGuard
 
 Executed the earliest, if a JSON Web Token (JWT) is present and validates all further guarding is dispensed with. Thus
 making subsequent requests a lot faster than initial requests. This one also requires the most configuration on
 instantiation.
 
-* __AuthenticationGuard__
+### AuthenticationGuard
 
 For basic HTTP based authentication. Takes a prepared PDOStatement and hash callable to check the username & password
 from the HTTP Request headers. When it validates it's `EVENT_AUTHENTICATE` Event object will reflect that. If the
 TokenGuard is also attached the user ID is written to the JWT.
 
-* __IpGuard__
+### IpGuard
 
 Allows for blacklisting and whitelisting certain IP addresses. Blacklisting will refuse the request when it's IP is
 in the database. Whitelisting is only of use when the default state is REFUSED, in which case the whitelisting will
@@ -65,7 +65,7 @@ change that state to ALLOWED.
 
 The IpGuard is instantiated with a prepared PDOStatement that allows it to look up the IP and get a state returned.
 
-* __UserAgentGuard__
+### UserAgentGuard
 
 Similar to the IpGuard but works on User Agents. This one is not so much a security measure as it is a way to ban
 dated browsers or specific devices from using your application.
@@ -86,3 +86,41 @@ Note on Exceptions from Guards
 
 Whenever a Guard throws an Exception the Firewall will always default to REFUSED and throw a generic FirewallException
 with the actual Exception attached as it's previous property.
+
+Usage example
+-------------
+
+```php
+<?php
+// Create a StackPHP compatible application, Silex is used here for the example
+$app = new Silex\Application();
+
+// Create the Actual Firewall instance and attach some guards
+$firewall = new \Webspot\Firewall\Firewall();
+$firewall->attachGuard(new Webspot\Firewall\Guard\AuthenticationGuard(function($username, $password) {
+        if ($username === 'test@test.com' && $password === 'password') {
+            return 42;
+        }
+        return null;
+    }));
+$firewall->attachGuard(new \Webspot\Firewall\Guard\TokenGuard(
+        [],
+        new \Psecio\Jwt\Jwt(
+            new \Psecio\Jwt\Header(sha1('my-very-secret-key')),
+            (new \Psecio\Jwt\ClaimsCollection())
+                ->add(new \Psecio\Jwt\Claim\Audience($_SERVER['SERVER_NAME']))
+                ->add(new \Psecio\Jwt\Claim\Issuer($_SERVER['SERVER_NAME']))
+                ->add(new \Psecio\Jwt\Claim\ExpireTime(time() + 7200))
+                ->add(new \Psecio\Jwt\Claim\Custom(time() + 3600, \Webspot\Firewall\Guard\TokenGuard::TOKEN_RENEW_AFTER))
+        )
+    ));
+
+// Create the StackPHP compatible wrapper for the Firewall
+$firewalledApp = new \Webspot\Firewall\StackFirewall($app, $firewall);
+
+// Return to normal execution
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+$respone = $firewalledApp->handle($request);
+$response->send();
+$app->terminate($request, $response);
+```
