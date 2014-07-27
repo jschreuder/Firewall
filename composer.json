@@ -16,6 +16,7 @@
         "symfony/event-dispatcher": ">=2.1.0,<3.0.0"
     },
     "suggest": {
+        "psecio/jwt": "Required for using the TokenGuard",
         "webspot/http-kernel": "Best used as StackPHP middleware."
     },
     "autoload": {

@@ -92,31 +92,35 @@ Usage example
 
 ```php
 <?php
+use Psecio\Jwt;
+use Webspot\Firewall\Guard;
+
 // Create a StackPHP compatible application, Silex is used here for the example
 $app = new Silex\Application();
 
 // Create the Actual Firewall instance and attach some guards
-$firewall = new \Webspot\Firewall\Firewall();
-$firewall->attachGuard(new Webspot\Firewall\Guard\AuthenticationGuard(function($username, $password) {
+$firewall = new Webspot\Firewall\Firewall();
+$firewall->attachGuard(new Guard\AuthenticationGuard(
+    function($username, $password) {
         if ($username === 'test@test.com' && $password === 'password') {
             return 42;
         }
         return null;
     }));
-$firewall->attachGuard(new \Webspot\Firewall\Guard\TokenGuard(
+$firewall->attachGuard(new Guard\TokenGuard(
         [],
-        new \Psecio\Jwt\Jwt(
-            new \Psecio\Jwt\Header(sha1('my-very-secret-key')),
-            (new \Psecio\Jwt\ClaimsCollection())
-                ->add(new \Psecio\Jwt\Claim\Audience($_SERVER['SERVER_NAME']))
-                ->add(new \Psecio\Jwt\Claim\Issuer($_SERVER['SERVER_NAME']))
-                ->add(new \Psecio\Jwt\Claim\ExpireTime(time() + 7200))
-                ->add(new \Psecio\Jwt\Claim\Custom(time() + 3600, \Webspot\Firewall\Guard\TokenGuard::TOKEN_RENEW_AFTER))
+        new Jwt\Jwt(
+            new Jwt\Header('my-very-secret-key'),
+            (new Jwt\ClaimsCollection())
+                ->add(new Jwt\Claim\Audience($_SERVER['SERVER_NAME']))
+                ->add(new Jwt\Claim\Issuer($_SERVER['SERVER_NAME']))
+                ->add(new Jwt\Claim\ExpireTime(time() + 7200))
+                ->add(new Jwt\Claim\Custom(time() + 3600, Guard\TokenGuard::TOKEN_RENEW_AFTER))
         )
     ));
 
 // Create the StackPHP compatible wrapper for the Firewall
-$firewalledApp = new \Webspot\Firewall\StackFirewall($app, $firewall);
+$firewalledApp = new Webspot\Firewall\StackFirewall($app, $firewall);
 
 // Return to normal execution
 $request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
