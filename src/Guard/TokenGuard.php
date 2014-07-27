@@ -14,7 +14,7 @@ use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\ForbiddenException;
 use Webspot\Firewall\Firewall;
 
-class TokenGuard implements GuardInterface
+class TokenGuard implements EventDispatcherAwareGuardInterface
 {
     const TOKEN_FIREWALL_PASS_CLAIM = 'fwl:pass';
     const TOKEN_RENEW_AFTER = 'fwl:rna';

@@ -2,7 +2,6 @@
 
 namespace Webspot\Firewall\Guard;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Firewall;
 
@@ -16,9 +15,6 @@ class UserAgentGuard implements GuardInterface
         ];
     }
 
-    /** @var  EventDispatcher */
-    private $eventDispatcher;
-
     /** @var  string[]  regexes to disallow when matched */
     private $regexes;
 
@@ -27,15 +23,6 @@ class UserAgentGuard implements GuardInterface
         if (count($regexes) > 0) {
             $this->regexes = $regexes;
         }
-    }
-
-    /**
-     * @param   EventDispatcher $eventDispatcher
-     * @return  void
-     */
-    public function setEventDispatcher(EventDispatcher $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

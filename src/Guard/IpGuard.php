@@ -2,7 +2,6 @@
 
 namespace Webspot\Firewall\Guard;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\ForbiddenException;
 use Webspot\Firewall\Firewall;
@@ -21,9 +20,6 @@ class IpGuard implements GuardInterface
         ];
     }
 
-    /** @var  EventDispatcher */
-    private $eventDispatcher;
-
     /** @var  callable */
     private $ipChecker;
 
@@ -40,19 +36,10 @@ class IpGuard implements GuardInterface
     }
 
     /**
-     * @param   EventDispatcher $eventDispatcher
-     * @return  void
-     */
-    public function setEventDispatcher(EventDispatcher $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    /**
      * @param   string $ip
      * @return  int
      */
-    private function checkIp($ip)
+    protected function checkIp($ip)
     {
         // Invalid IPs always count as blacklisted
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {

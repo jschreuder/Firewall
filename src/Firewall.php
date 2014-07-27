@@ -10,6 +10,7 @@ use Webspot\Firewall\Event\RefusedEvent;
 use Webspot\Firewall\Event\ResponseEvent;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\FirewallException;
+use Webspot\Firewall\Guard\EventDispatcherAwareGuardInterface;
 use Webspot\Firewall\Guard\GuardInterface;
 
 class Firewall
@@ -52,7 +53,9 @@ class Firewall
     public function attachGuard(GuardInterface $subscriber)
     {
         $this->getEventDispatcher()->addSubscriber($subscriber);
-        $subscriber->setEventDispatcher($this->getEventDispatcher());
+        if ($subscriber instanceof EventDispatcherAwareGuardInterface) {
+            $subscriber->setEventDispatcher($this->getEventDispatcher());
+        }
         return $this;
     }
 

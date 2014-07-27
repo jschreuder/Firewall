@@ -10,7 +10,7 @@ use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\UnauthorizedException;
 use Webspot\Firewall\Firewall;
 
-class AuthenticationGuard implements GuardInterface
+class AuthenticationGuard implements EventDispatcherAwareGuardInterface
 {
     const TOKEN_USER_ID = 'fwl:uid';
 
