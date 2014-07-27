@@ -1,8 +1,6 @@
 Webspot Firewall
 ================
 
-#### NOTE: this is pre-alpha, DO NOT USE.
-
 The Firewall is a StackPHP middleware that may be used to check certain guards against unwanted requests. By putting
 the Firewall in between your application and the outside world. This is done by attaching Guards to the Firewall that
 respond to the internal events and either allow or disallow a request.
