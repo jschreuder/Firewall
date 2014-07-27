@@ -10,8 +10,8 @@ class AuthenticationEvent extends Event
     /** @var  Request */
     private $request;
 
-    /** @var  array */
-    private $user;
+    /** @var  int|mixed */
+    private $userId;
 
     public function __construct(Request $request)
     {
@@ -37,23 +37,23 @@ class AuthenticationEvent extends Event
     }
 
     /**
-     * @param   array $user
+     * @param   int|mixed $userId
      * @return  void
      */
-    public function setUser(array $user)
+    public function setUserId($userId)
     {
-        $this->user = $user;
+        $this->userId = $userId ?: null;
     }
 
     /** @return  array */
-    public function getUser()
+    public function getUserId()
     {
-        return $this->user;
+        return $this->userId;
     }
 
     /** @return  bool */
     public function isAuthenticated()
     {
-        return !is_null($this->getUser());
+        return !is_null($this->getUserId());
     }
 }

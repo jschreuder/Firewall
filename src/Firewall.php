@@ -94,7 +94,7 @@ class Firewall
      * @param   Response $response
      * @return  void
      */
-    public function signOff(Response $response)
+    public function sendResponse(Response $response)
     {
         $signOffEvent = new ResponseEvent($response);
         $this->getEventDispatcher()->dispatch(self::EVENT_SEND_RESPONSE, $signOffEvent);

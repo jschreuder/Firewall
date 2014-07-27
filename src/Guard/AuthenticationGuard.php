@@ -5,6 +5,7 @@ namespace Webspot\Firewall\Guard;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Webspot\Firewall\Event\AuthenticationEvent;
 use Webspot\Firewall\Event\CreateTokenEvent;
+use Webspot\Firewall\Event\ResponseEvent;
 use Webspot\Firewall\Event\ValidationEvent;
 use Webspot\Firewall\Exception\UnauthorizedException;
 use Webspot\Firewall\Firewall;
@@ -19,6 +20,7 @@ class AuthenticationGuard implements GuardInterface
         return [
             Firewall::EVENT_VALIDATE_REQUEST => ['validateRequest', 0],
             Firewall::EVENT_AUTHENTICATE => ['authenticateUser', 0],
+            Firewall::EVENT_SEND_RESPONSE => ['addAuthChallengeForUnauthorized', 128],
             Firewall::EVENT_CREATE_TOKEN => ['addUserToToken', -256],
         ];
     }
@@ -26,26 +28,21 @@ class AuthenticationGuard implements GuardInterface
     /** @var  EventDispatcher */
     private $eventDispatcher;
 
-    /** @var  \PDOStatement */
-    private $query;
-
     /** @var  callable */
-    private $hasher;
+    private $authenticator;
 
     /** @var  string */
     private $userId;
 
     /**
-     * Needs a prepared query that should look like this:
-     *     SELECT id FROM users WHERE username = :username AND password = :password
+     * Needs a callable that will accept both a $username & $password parameter
+     * and return the UserID when valid or null when invalid
      *
-     * @param  \PDOStatement $query
-     * @param  callable $hasher hashes the password before checking it against the database
+     * @param  callable $authenticator
      */
-    public function __construct(\PDOStatement $query, callable $hasher)
+    public function __construct(callable $authenticator)
     {
-        $this->query = $query;
-        $this->hasher = $hasher;
+        $this->authenticator = $authenticator;
     }
 
     /**
@@ -63,21 +60,14 @@ class AuthenticationGuard implements GuardInterface
         return $this->eventDispatcher;
     }
 
-    /** @return  \PDOStatement */
-    private function getQuery()
-    {
-        return $this->query;
-    }
-
     /**
-     * Uses the provided hasher to hash the password
-     *
+     * @param   string $username
      * @param   string $password
-     * @return  string
+     * @return  int|mixed
      */
-    private function hash($password)
+    private function authenticate($username, $password)
     {
-        return call_user_func($this->hasher, $password);
+        return call_user_func($this->authenticator, $username, $password);
     }
 
     /**
@@ -94,8 +84,7 @@ class AuthenticationGuard implements GuardInterface
         $this->getEventDispatcher()->dispatch(Firewall::EVENT_AUTHENTICATE, $authenticationEvent);
 
         if ($authenticationEvent->isAuthenticated()) {
-            $user = $authenticationEvent->getUser();
-            $this->userId = $user['id'];
+            $this->userId = $authenticationEvent->getUserId();
         } else {
             $event->setState(ValidationEvent::STATE_REFUSED);
             $event->setMessage('Authentication failed');
@@ -117,16 +106,17 @@ class AuthenticationGuard implements GuardInterface
             return;
         }
 
-        $query = $this->getQuery();
-        $query->execute(
-            [
-                'username' => $username,
-                'password' => $this->hash($password),
-            ]
-        );
-        if ($query->rowCount() > 0) {
-            $user = $query->fetch(\PDO::FETCH_ASSOC);
-            $event->setUser($user);
+        $userId = $this->authenticate($username, $password);
+        if ($userId) {
+            $event->setUserId($userId);
+        }
+    }
+
+    public function addAuthChallengeForUnauthorized(ResponseEvent $event)
+    {
+        $response = $event->getResponse();
+        if ($response->getStatusCode() === 401) {
+            $response->headers->set('WWW-Authenticate', 'Basic realm="Webspot"'); // @todo make this configurable
         }
     }
 

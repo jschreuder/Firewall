@@ -34,9 +34,6 @@ class TokenGuard implements GuardInterface
     /** @var  EventDispatcher */
     private $eventDispatcher;
 
-    /** @var  string */
-    private $key;
-
     /** @var  array */
     private $cookieSettings;
 
@@ -50,16 +47,14 @@ class TokenGuard implements GuardInterface
     private $decodedToken;
 
     /**
-     * Instantiate with the encoding $key, the $cookieName to which the JWT is stored, and a fully
-     * configured Jwt instance that is used for decoding or as the basis for a new one hen necessary
+     * Instantiate with the $cookieName to which the JWT is stored, and a fully configured Jwt
+     * instance that is used for decoding or as the basis for a new one hen necessary
      *
-     * @param  string $key
      * @param  array $cookieSettings
      * @param  Jwt\Jwt $jwt
      */
-    public function __construct($key, array $cookieSettings, Jwt\Jwt $jwt)
+    public function __construct(array $cookieSettings, Jwt\Jwt $jwt)
     {
-        $this->key = $key;
         $this->cookieSettings = $cookieSettings;
         $this->jwt = $jwt;
     }
@@ -80,15 +75,41 @@ class TokenGuard implements GuardInterface
     }
 
     /** @return  string */
-    public function getKey()
+    public function getCookieName()
     {
-        return $this->key;
+        return isset($this->cookieSettings['name']) ? $this->cookieSettings['name'] : 'ws-firewall';
+    }
+
+    /** @return  int */
+    public function getCookieExpire()
+    {
+        return isset($this->cookieSettings['expiration'])
+            ? intval($this->cookieSettings['expiration'])
+            : (time() + 7200);
     }
 
     /** @return  string */
-    public function getCookieName()
+    public function getCookiePath()
     {
-        return $this->cookieSettings['name'];
+        return isset($this->cookieSettings['path']) ? $this->cookieSettings['path'] : '/';
+    }
+
+    /** @return  string|null */
+    public function getCookieDomain()
+    {
+        return isset($this->cookieSettings['domain']) ? $this->cookieSettings['domain'] : null;
+    }
+
+    /** @return  bool */
+    public function getCookieSecure()
+    {
+        return isset($this->cookieSettings['secure']) ? $this->cookieSettings['secure'] : false;
+    }
+
+    /** @return  bool */
+    public function getCookieHttpOnly()
+    {
+        return isset($this->cookieSettings['httpOnly']) ? $this->cookieSettings['httpOnly'] : true;
     }
 
     /** @return  Jwt\Jwt */
@@ -116,7 +137,7 @@ class TokenGuard implements GuardInterface
         $request = $event->getRequest();
 
         // Check for a token, otherwise nothing to do
-        $token = (array) $this->getTokenFromRequest($request);
+        $token = $this->getTokenFromRequest($request);
         if (!$token) {
             return;
         }
@@ -150,7 +171,7 @@ class TokenGuard implements GuardInterface
     {
         // Decode the token and respond accordingly
         try {
-            $this->decodedToken = $this->getJwt()->decode($event->getToken());
+            $this->decodedToken = (array) $this->getJwt()->decode($event->getToken());
         } catch (\Exception $e) {
             // @todo add support for detecting a cookie with wrong signage to output as STATE_ILLEGAL?
             return;
@@ -198,7 +219,12 @@ class TokenGuard implements GuardInterface
         // When done, create Cookie and write to Response
         $event->getResponse()->headers->setCookie(new Cookie(
             $this->getCookieName(),
-                $createTokenEvent->getJwt()->encode()
+            $createTokenEvent->getJwt()->encode(),
+            $this->getCookieExpire(),
+            $this->getCookiePath(),
+            $this->getCookieDomain(),
+            $this->getCookieSecure(),
+            $this->getCookieHttpOnly()
         ));
     }
 
