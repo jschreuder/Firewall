@@ -1,7 +1,7 @@
 {
-    "name": "webspot/application",
+    "name": "webspot/firewall",
     "type": "library",
-    "description": "Webspot Application Framework",
+    "description": "Webspot Firewall with StackPHP support",
     "homepage": "http://webspotframework.com",
     "license": "MIT",
     "authors": [
