@@ -27,17 +27,17 @@ class AuthenticationEvent extends Event
     /** @return  string */
     public function getUsername()
     {
-        return $this->getRequest()->getUser();
+        return strval($this->getRequest()->getUser());
     }
 
     /** @return  string */
     public function getPassword()
     {
-        return $this->getRequest()->getPassword();
+        return strval($this->getRequest()->getPassword());
     }
 
     /**
-     * @param   int|mixed $userId
+     * @param   string $userId
      * @return  void
      */
     public function setUserId($userId)
@@ -45,7 +45,7 @@ class AuthenticationEvent extends Event
         $this->userId = $userId ? : null;
     }
 
-    /** @return  array */
+    /** @return  string */
     public function getUserId()
     {
         return $this->userId;

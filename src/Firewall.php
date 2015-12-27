@@ -85,7 +85,7 @@ class Firewall
             if ($exception = $validationEvent->getException()) {
                 throw $exception;
             } else {
-                throw new FirewallException($refusedEvent->getMessage(), isset($e) ? $e : null);
+                throw new FirewallException($refusedEvent->getMessage());
             }
         }
 

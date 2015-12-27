@@ -63,7 +63,7 @@ class AuthenticationGuard implements EventDispatcherAwareGuardInterface
     /**
      * @param   string $username
      * @param   string $password
-     * @return  int|mixed
+     * @return  string
      */
     protected function authenticate($username, $password)
     {
@@ -102,7 +102,7 @@ class AuthenticationGuard implements EventDispatcherAwareGuardInterface
     {
         $username = $event->getUsername();
         $password = $event->getPassword();
-        if (!$username || !$password) {
+        if (empty($username) || empty($password)) {
             return;
         }
 
