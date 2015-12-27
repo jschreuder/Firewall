@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class CreateTokenEvent extends Event
 {
-    /** @var  array */
+    /** @var  array|null */
     private $oldToken;
 
     /** @var  Jwt */

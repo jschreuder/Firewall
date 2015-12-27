@@ -89,7 +89,7 @@ class Firewall
             }
         }
 
-        $allowedEvent = new AllowedEvent($request, $validationEvent->getMessage());
+        $allowedEvent = new AllowedEvent($request);
         $eventDispatcher->dispatch(self::EVENT_REQUEST_ALLOWED, $allowedEvent);
     }
 
