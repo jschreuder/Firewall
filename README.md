@@ -1,6 +1,10 @@
 Webspot Firewall
 ================
 
+[![Build Status](https://travis-ci.org/WebspotCode/Firewall.svg?branch=master)](https://travis-ci.org/WebspotCode/Firewall)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/WebspotCode/Firewall/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/WebspotCode/Firewall/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/WebspotCode/Firewall/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/WebspotCode/Firewall/?branch=master)
+
 The Firewall is a StackPHP middleware that may be used to check certain guards against unwanted requests. By putting
 the Firewall in between your application and the outside world. This is done by attaching Guards to the Firewall that
 respond to the internal events and either allow or disallow a request.
