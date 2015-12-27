@@ -5,7 +5,7 @@ namespace Webspot\Firewall\Test;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Webspot\Application\Application;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Webspot\Firewall\Exception\FirewallException;
 use Webspot\Firewall\StackFirewall;
 
@@ -67,7 +67,7 @@ class StackFirewallTest extends PHPUnit_Framework_TestCase
         $this->assertContains($message, $response->getContent());
         $this->assertEquals($code, $response->getStatusCode());
 
-        $this->stackFirewall->handle($request, Application::MASTER_REQUEST, false);
+        $this->stackFirewall->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
     }
 
     /**
@@ -96,6 +96,6 @@ class StackFirewallTest extends PHPUnit_Framework_TestCase
         $this->assertContains($message, $response->getContent());
         $this->assertEquals($code, $response->getStatusCode());
 
-        $this->stackFirewall->handle($request, Application::MASTER_REQUEST, false);
+        $this->stackFirewall->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
     }
 }
