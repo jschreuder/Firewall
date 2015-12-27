@@ -9,3 +9,6 @@ build:
                 coverage:
                     file: 'coverage.xml'
                     format: 'php-clover'
+
+filter:
+    paths: ["src/*"]
